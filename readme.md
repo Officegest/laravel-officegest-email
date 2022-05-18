@@ -10,7 +10,7 @@ Laravel < 8.0 Add ServiceProvider to your `config/app.php`
 
     OfficegestEmail\OfficegestEmailServiceProvider::class,
 
-If you need to publish the config file for this package. This will add the file `config/officegest-sms.php`, where you can configure this package.
+If you need to publish the config file for this package. This will add the file `config/officegest-email.php`, where you can configure this package.
 
     $ php artisan vendor:publish --provider="OfficegestEmail\OfficegestEmailServiceProvider" --tag=config
 
