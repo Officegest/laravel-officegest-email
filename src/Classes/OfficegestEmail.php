@@ -2,6 +2,8 @@
 
 namespace OfficegestEmail\Classes;
 
+use Illuminate\Validation\ValidationException;
+
 class OfficegestEmail
 {
     public function __construct()
@@ -19,7 +21,7 @@ class OfficegestEmail
         return true;
     }
 
-    public function send(string $to, string $subject, string $content, string $from = null)
+    public function send(string $to, string $subject, string $content, string|array $from = null)
     {
         $this->isActive();
         $auth_data = [
@@ -33,10 +35,10 @@ class OfficegestEmail
             'content' => $content,
         );
         $url = $this->url . '/api/utils/send_email';
-        $response = self::CallAPI('POST', $url, $post_data, $auth_data);
 
-        $result = json_decode($response);
-        return response()->json($result, 200);
+        self::CallAPI('POST', $url, $post_data, $auth_data);
+
+        return response()->json(['success' => true, 'message' => 'Your email was sended'], 200);
     }
 
     public static function CallAPI($method, $url, $data = false, $auth = [])
@@ -68,8 +70,33 @@ class OfficegestEmail
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
         $result = curl_exec($curl);
+        $data = json_decode($result);
         curl_close($curl);
-        return $result;
+
+        if($data->code == 2008){
+            throw new \Exception(__(
+                $data->code_desc
+            ));
+        }
+        else if($data->code == 2007){
+            throw new \Exception(__(
+                $data->invalid_arg
+            ));
+        }
+
+        if($data->code == 1001){
+            throw new \Exception(__(
+                $data->code_desc
+            ));
+        }
+        else if ($data->code == 1000){
+            return $data;
+        }
+        else{
+            throw new \Exception(__(
+                'Something went wrong'
+            ));
+        }
     }
 
     public static function build_post_fields($data, $existingKeys = '', &$returnArray = [])
