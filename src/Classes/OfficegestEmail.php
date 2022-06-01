@@ -21,7 +21,7 @@ class OfficegestEmail
         return true;
     }
 
-    public function send(string $to, string $subject, string $content, string|array $from = null)
+    public function send(string $to, string $subject, string $content, string $from = null)
     {
         $this->isActive();
         $auth_data = [
@@ -73,26 +73,23 @@ class OfficegestEmail
         $data = json_decode($result);
         curl_close($curl);
 
-        if($data->code == 2008){
+        if ($data->code == 2008) {
             throw new \Exception(__(
                 $data->code_desc
             ));
-        }
-        else if($data->code == 2007){
+        } else if ($data->code == 2007) {
             throw new \Exception(__(
                 $data->invalid_arg
             ));
         }
 
-        if($data->code == 1001){
+        if ($data->code == 1001) {
             throw new \Exception(__(
                 $data->code_desc
             ));
-        }
-        else if ($data->code == 1000){
+        } else if ($data->code == 1000) {
             return $data;
-        }
-        else{
+        } else {
             throw new \Exception(__(
                 'Something went wrong'
             ));
