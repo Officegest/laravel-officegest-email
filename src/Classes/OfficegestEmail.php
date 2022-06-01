@@ -21,7 +21,7 @@ class OfficegestEmail
         return true;
     }
 
-    public function send(string $to, string $subject, string $content, string $from = null)
+    public function send(string $to, string $subject, string $content, array $from = null)
     {
         $this->isActive();
         $auth_data = [
